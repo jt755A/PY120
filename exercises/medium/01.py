@@ -22,8 +22,6 @@ class CircularBuffer:
             CircularBuffer.state.pop(0)
             CircularBuffer.state.append(item)
 
-
-
     
     def get(self):
         if CircularBuffer.state:

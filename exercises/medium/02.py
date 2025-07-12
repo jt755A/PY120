@@ -74,8 +74,8 @@ class GuessingGame:
     
     
 
-    def got_the_num(self, guess):
-        self.guess = guess
+    def check_guess(self, guess_value):
+        self.guess = guess_value
         if self.guess == GuessingGame.TARGET_NUM:
             GuessingGame.winner = True
             print(f"That's the number!\nYou won!")

@@ -18,6 +18,7 @@ Algorithm
 class Banner:
     def __init__(self, message, width=len(message) + 4):
         self.message = message
+        self.width = width
     
     @property
     def message(self):
