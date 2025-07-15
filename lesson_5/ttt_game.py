@@ -1,22 +1,8 @@
 import random
+import os
 
-class Square:
-    def __init__(self):
-        # STUB
-        # We need some way to keep track of this square's
-        #   marker.
-        pass
-
-class Board:
-    def __init__(self):
-        # STUB
-        # We need a way to model the 3x3 grid. Perhaps
-        #   "squares"?
-        # What data structure should we use? A list? A
-        #   dictionary? Something else?
-        # What should the data structure store? Strings?
-        #   Numbers? Square objects?
-        pass
+def clear_screen():
+    os.system('clear')
 
 class Row:
     def __init__(self):
@@ -26,36 +12,25 @@ class Row:
 
 class Player:
     def __init__(self, marker):
-        # STUB
-        # A player is either a human or a computer that is
-        #   playing the game.
-        # Perhaps we need a "marker" to keep track of this
-        #   player's symbol? (i.e., 'X' or 'O')
         self.marker = marker
 
     @property
     def marker(self):
         return self._marker
-    
+
     @marker.setter
     def marker(self, marker):
         self._marker = marker
 
 class Human(Player):
     def __init__(self):
-        # STUB
-        # What does a human player need to do? How does it
-        #   differ from the basic Player or a Computer?
         super().__init__(Square.HUMAN_MARKER)
 
-        
+
 class Computer(Player):
     def __init__(self):
-        # STUB
-        # What does a computer player need to do? How does
-        #   it differ from the basic Player or a Human?
         super().__init__(Square.COMPUTER_MARKER)
-        
+
 
 class Square:
     INITIAL_MARKER = " "
@@ -67,11 +42,11 @@ class Square:
 
     def __str__(self):
         return self.marker
-    
+
     @property
     def marker(self):
         return self._marker
-    
+
     @marker.setter
     def marker(self, marker):
         self._marker = marker
@@ -88,21 +63,35 @@ class Board:
         print("     |     |")
         print(f"  {self.squares[1]}  |"
               f"  {self.squares[2]}  |"
-              f"  {self.squares[3]}  |")         
+              f"  {self.squares[3]}  |")
         print("     |     |")
         print("-----+-----+-----")
         print("     |     |")
         print(f"  {self.squares[4]}  |"
               f"  {self.squares[5]}  |"
-              f"  {self.squares[6]}  |")  
+              f"  {self.squares[6]}  |")
         print("     |     |")
         print("-----+-----+-----")
         print("     |     |")
         print(f"  {self.squares[7]}  |"
               f"  {self.squares[8]}  |"
-              f"  {self.squares[9]}  |")  
+              f"  {self.squares[9]}  |")
         print("     |     |")
         print()
+
+
+    def count_markers_for(self, player, keys):
+        markers = [self.squares[key].marker for key in keys]
+        return markers.count(player.marker)
+
+    def display_with_clear(self):
+        clear_screen()
+        print("\n")
+        self.display()
+
+    def is_full(self):
+        unused_squares = self.unused_squares()
+        return len(unused_squares) == 0
 
     def mark_square_at(self, key, marker):
         self.squares[key].marker = marker
@@ -114,18 +103,26 @@ class Board:
 
 
 class TTTGame:
+    POSSIBLE_WINNING_ROWS = (
+    (1, 2, 3),
+    (4, 5, 6),
+    (7, 8, 9),
+    (1, 4, 7),
+    (2, 5, 8),
+    (3, 6, 9),
+    (1, 5, 9),
+    (3, 5, 7)
+    )
     def __init__(self):
         self.board = Board()
         self.human = Human()
         self.computer = Computer()
 
     def play(self):
-        # SPIKE
         self.display_welcome_message()
+        self.board.display()
 
         while True:
-            self.board.display()
-
             self.human_moves()
             if self.is_game_over():
                 break
@@ -134,22 +131,36 @@ class TTTGame:
             if self.is_game_over():
                 break
 
+            self.board.display_with_clear()
 
-        self.board.display()
+
+        self.board.display_with_clear()
         self.display_results()
         self.display_goodbye_message()
 
     def display_welcome_message(self):
+        clear_screen()
         print('Welcome to Tic Tac Toe!')
+        print()
 
     def display_goodbye_message(self):
         print('Thanks for playing Tic Tac Toe! Goodbye!')
 
     def display_results(self):
-        # STUB
-        # Show the results of this game (win, lose, tie).
-        pass
-    
+        if self.is_winner(self.human):
+            print("You won! Congratulations!")
+        elif self.is_winner(self.computer):
+            print("Computer wins...")
+        else:
+            print("It's a tie!")
+
+    def is_winner(self, player):
+        for row in TTTGame.POSSIBLE_WINNING_ROWS:
+            if self.three_in_a_row(player, row):
+                return True
+
+        return False
+
 
     def human_moves(self):
         valid_choices = self.board.unused_squares()
@@ -158,7 +169,7 @@ class TTTGame:
             choices_str = ", ".join(choices_list)
             prompt = f"Choose a square ({choices_str}): "
             choice = input(prompt)
-            
+
             try:
                 choice = int(choice)
                 if choice in valid_choices:
@@ -170,17 +181,21 @@ class TTTGame:
             print()
 
         self.board.mark_square_at(choice, self.human.marker)
-        # Mark the chosen square with the human's marker.
 
     def computer_moves(self):
         valid_choices = self.board.unused_squares()
         choice = random.choice(valid_choices)
         self.board.mark_square_at(choice, self.computer.marker)
-              
+
     def is_game_over(self):
-        # STUB
-        # We'll start by assuming the game never ends.
-        return False
+        return self.board.is_full() or self.someone_won()
+
+    def three_in_a_row(self, player, row):
+        return self.board.count_markers_for(player, row) == 3
+
+    def someone_won(self):
+        return (self.is_winner(self.human) or
+               self.is_winner(self.computer))
 
 game = TTTGame()
 game.play()
