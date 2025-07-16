@@ -218,7 +218,12 @@ class TTTGame:
 
     def computer_moves(self):
         valid_choices = self.board.unused_squares()
-        choice = random.choice(valid_choices)
+        # STUB
+        if self.immediate_threat(self.human):
+            choice = self.defensive_move(self.human)
+        
+        else:
+            choice = random.choice(valid_choices)
         self.board.mark_square_at(choice, self.computer.marker)
 
     def is_game_over(self):
@@ -226,6 +231,32 @@ class TTTGame:
 
     def three_in_a_row(self, player, row):
         return self.board.count_markers_for(player, row) == 3
+    
+    def two_in_a_row(self, player, row):
+        # this could be used to alert the player if the computer has 2 
+        # in a row?
+        return self.board.count_markers_for(player, row) == 2
+    
+    def empty_square(self, row):
+        for key in row:
+            if key in self.board.unused_squares():
+                return key
+    
+    def immediate_threat(self, player):
+        #STUB
+        # needs a way to check for last remaining empty square
+        for row in TTTGame.POSSIBLE_WINNING_ROWS:
+            if self.two_in_a_row(player, row) and self.empty_square(row):
+                return True
+        
+        return False
+    
+    def defensive_move(self, player):
+        for row in TTTGame.POSSIBLE_WINNING_ROWS:
+            if self.two_in_a_row(player, row) and self.empty_square(row):
+                return self.empty_square(row)
+    
+
 
     def someone_won(self):
         return (self.is_winner(self.human) or

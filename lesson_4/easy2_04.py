@@ -27,5 +27,5 @@ hello.greet('Goodbye') # Prints 'Goodbye'
 Hello.hi() # less readable: 'Hello'?
 # actually a TypeError. No `self` is invoked. You are using `hi` method on
 # `Hello` class. Invoking instance methods as class methods no instance is 
-#passed as self....
+# passed as self....
 
