@@ -201,6 +201,7 @@ class TTTGame:
         return (self.is_winner(self.human) or
                self.is_winner(self.computer))
     
+    @staticmethod
     def _join_or(choices, separator=", ", conjunction="or"):
         if len(choices) == 1:
             return str(choices[0])
@@ -212,6 +213,7 @@ class TTTGame:
         initial = [str(choice) for choice in initial]
         prompt = separator.join(initial)
         return f"{prompt}{separator}{conjunction} {last}"
+    
 
 game = TTTGame()
 game.play()
