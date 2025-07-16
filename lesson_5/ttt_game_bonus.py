@@ -56,7 +56,11 @@ class Square:
 
 class Board:
     def __init__(self):
+        self.reset()
+
+    def reset(self):
         self.squares = {key: Square() for key in range(1, 10)}
+
 
     def display(self):
         print()
@@ -100,6 +104,9 @@ class Board:
         return [key
                 for key, square in self.squares.items()
                 if square.is_unused()]
+    
+    def reset(self):
+        self.squares = {key: Square() for key in range(1, 10)}
 
 
 class TTTGame:
@@ -120,6 +127,19 @@ class TTTGame:
 
     def play(self):
         self.display_welcome_message()
+
+        while True:
+            self.play_one_game()
+            if not self.play_again():
+                break
+
+            print("Let's play again!")
+            print()
+
+        self.display_goodbye_message()
+
+    def play_one_game(self):
+        self.board.reset()
         self.board.display()
 
         while True:
@@ -136,7 +156,17 @@ class TTTGame:
 
         self.board.display_with_clear()
         self.display_results()
-        self.display_goodbye_message()
+
+    def play_again(self):
+        options = ('y', 'n')
+        choice = input("Would you like to play another game? (y/n) ").casefold()
+        while choice not in options:
+            choice = input("Sorry, that's not a valid choice. " 
+            "Please choose (y/n) to play again").casefold()
+    
+        clear_screen()
+        return choice.startswith('y')
+    
 
     def display_welcome_message(self):
         clear_screen()
@@ -213,6 +243,9 @@ class TTTGame:
         initial = [str(choice) for choice in initial]
         prompt = separator.join(initial)
         return f"{prompt}{separator}{conjunction} {last}"
+    
+ 
+
     
 
 game = TTTGame()
