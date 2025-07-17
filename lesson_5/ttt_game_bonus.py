@@ -129,6 +129,7 @@ class TTTGame:
         self.board = Board()
         self.human = Human()
         self.computer = Computer()
+        self.first_player = self.human                               
 
     def play(self):
         self.display_welcome_message()
@@ -143,24 +144,31 @@ class TTTGame:
             print("Let's play again!")
             print()
 
+            self.first_player = self.toggle_player(self.first_player)
+
         self.display_match_winner()
         self.display_goodbye_message()
 
     def play_one_game(self):
+        current_player = self.first_player
+
         self.board.reset()
         self.board.display()
         self.display_current_score()
 
         while True:
-            self.human_moves()
+            self.player_moves(current_player)
+            # self.human_moves()
             if self.is_game_over():
                 break
 
-            self.computer_moves()
-            if self.is_game_over():
-                break
+
+            # self.computer_moves()s
+            # if self.is_game_over():
+            #     break
 
             self.board.display_with_clear()
+            current_player = self.toggle_player(current_player)
 
 
         self.board.display_with_clear()
@@ -225,7 +233,16 @@ class TTTGame:
             print('Computer wins! Better luck next time.')
         else:
             print("The match is tied!")
-        
+    
+    def toggle_player(self, player):
+        return self.computer if player == self.human else self.human
+    
+    def player_moves(self, current_player):
+        if current_player == self.human:
+            self.human_moves()
+        else:
+            self.computer_moves()
+
     def human_moves(self):
         valid_choices = self.board.unused_squares()
         while True:
