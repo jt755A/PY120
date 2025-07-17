@@ -217,13 +217,23 @@ class TTTGame:
         self.board.mark_square_at(choice, self.human.marker)
 
     def computer_moves(self):
-        valid_choices = self.board.unused_squares()
         # STUB
-        if self.immediate_threat(self.human):
-            choice = self.defensive_move(self.human)
+        # looks for a possible winning move for computer, then possible 
+        # winnning move for human. If none found, makes a random choice
         
-        else:
+        # if self.immediate_threat(self.human):
+        # choice = self.offensive_computer_move()
+        # if not choice:
+        #     choice = self.defensive_computer_move()
+
+        choice = self.computer_offense_defense_move(self.computer)
+        if not choice:
+            choice = self.computer_offense_defense_move(self.human)
+
+        if not choice:
+            valid_choices = self.board.unused_squares()
             choice = random.choice(valid_choices)
+
         self.board.mark_square_at(choice, self.computer.marker)
 
     def is_game_over(self):
@@ -242,21 +252,33 @@ class TTTGame:
             if key in self.board.unused_squares():
                 return key
     
-    def immediate_threat(self, player):
-        #STUB
-        # needs a way to check for last remaining empty square
-        for row in TTTGame.POSSIBLE_WINNING_ROWS:
-            if self.two_in_a_row(player, row) and self.empty_square(row):
-                return True
+    # def immediate_threat(self, player):
+    #     #STUB
+    #     # needs a way to check for last remaining empty square
+    #     for row in TTTGame.POSSIBLE_WINNING_ROWS:
+    #         if self.two_in_a_row(player, row) and self.empty_square(row):
+    #             return True
         
-        return False
+    #     return False
     
-    def defensive_move(self, player):
+    def computer_offense_defense_move(self, winning_player):
         for row in TTTGame.POSSIBLE_WINNING_ROWS:
-            if self.two_in_a_row(player, row) and self.empty_square(row):
+            if self.two_in_a_row(winning_player, row) and self.empty_square(row):
                 return self.empty_square(row)
     
-
+    # def defensive_computer_move(self):
+    #     for row in TTTGame.POSSIBLE_WINNING_ROWS:
+    #         if self.two_in_a_row(self.human, row) and self.empty_square(row):
+    #             return self.empty_square(row)
+            
+    #     return None
+    
+    # def offensive_computer_move(self):
+    #     for row in TTTGame.POSSIBLE_WINNING_ROWS:
+    #         if self.two_in_a_row(self.computer, row) and self.empty_square(row):
+    #             return self.empty_square(row)
+            
+        return None
 
     def someone_won(self):
         return (self.is_winner(self.human) or
