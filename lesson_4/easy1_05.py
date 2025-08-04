@@ -10,4 +10,9 @@ class Pizza:
 # print(fruit1.my_name)
 
 pizza1 = Pizza('margherita')
-print(pizza1.my_name)
+# print(pizza1.my_name)
+
+# print(vars(pizza1))
+# print(pizza1.__dict__)
+
+print(vars(pizza1) is pizza1.__dict__)
